@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap');
+
+:root {
+    --fundo-claro: #A3BCF9;
+    --fundo-escuro: #595959;
+    --destaque: #F6AE2D;
+    --lista-escuro: #919191;
+}
+
+body {
+    background-color: var(--fundo-claro);
+    color: white;
+    font-family: "Archivo", sans-serif;
+}
+
+body.escuro {
+    background-color: var(--fundo-escuro);
+}
+
+div#switchOut {
+    display: flex;
+    transition: background-color .3s;
+    cursor: pointer;
+    align-items: center;
+    background-color: white;
+    padding: 3px;
+    height: 30px;
+    width: 60px;
+    border-radius: 18px;
+    margin-left: auto;
+}
+
+input#switchToggle {
+    display: none;
+}
+
+span#switchIn {
+    display: flex;
+    transition: transform .3s, background-color .3s;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--fundo-claro);
+    color: yellow;
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.200);
+    padding: 3px;
+    font-size: 25px;
+    height: 25px;
+    width: 26px;
+    border-radius: 50%;
+}
+
+body.escuro span#switchIn {
+    background-color: var(--fundo-escuro);
+    color: white;
+}
+
+span#switchIn p {
+    font-size: 30px;
+    margin-bottom: 33px;
+}
+
+h1 {
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+main {
+    text-align: center;
+}
+
+table#lista {
+    min-width: 80vw;
+    margin: 20px auto;
+    border-radius: 5px;
+    background-color: white;
+    color: black;
+}
+
+body.escuro table#lista {
+    background-color: var(--lista-escuro);
+    color: white;
+}
