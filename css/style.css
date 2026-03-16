@@ -1,10 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap');
 
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
 :root {
     --fundo-claro: #A3BCF9;
     --fundo-escuro: #595959;
     --destaque: #F6AE2D;
     --lista-escuro: #919191;
+
+    --bgcolor: #A3BCF9;
 }
 
 body {
@@ -15,6 +23,7 @@ body {
 
 body.escuro {
     background-color: var(--fundo-escuro);
+    --bgcolor: var(--fundo-escuro);
 }
 
 div#switchOut {
@@ -24,6 +33,7 @@ div#switchOut {
     align-items: center;
     background-color: white;
     padding: 3px;
+    margin: 10px;
     height: 30px;
     width: 60px;
     border-radius: 18px;
@@ -36,16 +46,15 @@ input#switchToggle {
 
 span#switchIn {
     display: flex;
-    transition: transform .3s, background-color .3s;
     justify-content: center;
     align-items: center;
+    transition: transform .3s, background-color .3s;
     background-color: var(--fundo-claro);
     color: yellow;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.200);
-    padding: 3px;
-    font-size: 25px;
+    font-size: 18px;
     height: 25px;
-    width: 26px;
+    width: 25px;
     border-radius: 50%;
 }
 
@@ -54,14 +63,34 @@ body.escuro span#switchIn {
     color: white;
 }
 
-span#switchIn p {
-    font-size: 30px;
-    margin-bottom: 33px;
-}
-
 h1 {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
     text-align: center;
+    margin-bottom: 10px;
+}
+
+#inputTask {
+    height: 23px;
+    padding: 5px;
+    border: none;
+    border-radius: 14px;
+}
+
+#addTask, input.removeTask, input.editTask {
+    background-color: white;
+    padding: 3px;
+    margin: 0 10px;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+#addTask:active, input.removeTask:active, input.editTask:active {
+    background-color: var(--bgcolor);
+}
+
+#addTask:hover, input.removeTask:hover, input.editTask:hover {
+    color: var(--destaque);
+    border-color: var(--destaque);
 }
 
 main {
@@ -69,14 +98,38 @@ main {
 }
 
 table#lista {
-    min-width: 80vw;
+    width: 80vw;
     margin: 20px auto;
-    border-radius: 5px;
-    background-color: white;
     color: black;
 }
 
-body.escuro table#lista {
+#lista tr {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    background-color: white;
+    place-items: center;
+    min-height: 50px;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 5px;
+}
+
+#lista th {
+    font-weight: normal;
+    font-size: 1.1em;
+    overflow-wrap: anywhere;
+}
+
+body.escuro #lista th {
+    text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+body.escuro #lista tr {
     background-color: var(--lista-escuro);
     color: white;
+}
+
+#lista input.concluir {
+    height: 20px;
+    width: 20px;
 }
