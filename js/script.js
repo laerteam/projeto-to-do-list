@@ -3,10 +3,38 @@ let switchIn = document.getElementById('switchIn');
 let switchToggle = document.querySelector('input#switchToggle');
 let lista = document.getElementById('lista');
 
-const switchOnOff = () => {
-    switchToggle.checked = !switchToggle.checked;
-    document.body.classList.toggle('escuro');
-    if (switchToggle.checked) {
+const salvarTarefas = () => {
+    let tarefas = [];
+
+    document.querySelectorAll('#lista tr').forEach(tr => {
+        let texto = tr.querySelector('p').textContent;
+        let checked = tr.querySelector('input.concluir').checked;
+
+        tarefas.push({
+            tarefa: texto,
+            isCheck: checked
+        });
+    });
+
+    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+}
+
+const carregarTarefas = () => {
+    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+
+    let isDark = localStorage.getItem('isDarkMode') === 'true';
+    aplicarModoEscuro(isDark);
+
+    tarefas.forEach((tarefaObj) => {
+        addLinha(tarefaObj.tarefa, tarefaObj.isCheck);
+    });
+}
+
+const aplicarModoEscuro = (ativo) => {
+    switchToggle.checked = ativo;
+    document.body.classList.toggle('escuro', ativo);
+
+    if (ativo) {
         switchIn.style.transform = 'translateX(30px)';
         switchIn.innerHTML = '<i class="fa-solid fa-moon"></i>'
     } else {
@@ -15,11 +43,18 @@ const switchOnOff = () => {
     }
 }
 
+const switchOnOff = () => {
+    const estadoAtual = switchToggle.checked;
+    const novoEstado = !estadoAtual;
+    aplicarModoEscuro(novoEstado);
+    localStorage.setItem('isDarkMode', novoEstado);
+}
+
 switchOut.addEventListener('click', switchOnOff);
 
-const addLinha = () => {
+const addLinha = (texto = null, isCheck = false) => {
     let inputTask = document.querySelector('input#inputTask');
-    let task = inputTask.value;
+    let task = texto || inputTask.value;
     
     if (!task.trim()) {
         alert('[ERRO] É necessário digitar um valor antes de adiciona-lo.');
@@ -32,6 +67,7 @@ const addLinha = () => {
     let tdConcluir = document.createElement('td');
     let tdEditTh = document.createElement('td');
     tdEditTh.classList.add('editTh');
+
     let preview = task.length > 30? 
     task.slice(0, 30) + '...': 
     task;
@@ -40,7 +76,7 @@ const addLinha = () => {
     let p = document.createElement('p');
     p.textContent = task;
 
-    let concluir = addConcluir(tableHeader);
+    let concluir = addConcluir(tableHeader, isCheck);
     let btnEditar = addEditar(p);
     let btnRemover = addRemover(tableRow);
 
@@ -56,16 +92,25 @@ const addLinha = () => {
     
     inputTask.value = '';
     inputTask.focus();
+
+    salvarTarefas();
 }
 
-const addConcluir = (tableHeader) => {
+const addConcluir = (tableHeader, isCheck) => {
     let concluir = document.createElement('input');
     concluir.classList.add('concluir');
     concluir.name = 'concluir';
     concluir.type = 'checkbox';
-    concluir.value = 'Concluir';
+
+    concluir.checked = isCheck;
+
+    if (isCheck) {
+        tableHeader.classList.add('isComplete');
+    }
+
     concluir.addEventListener('change', () => {
         tableHeader.classList.toggle('isComplete');
+        salvarTarefas();
     })
 
     return concluir;
@@ -76,6 +121,7 @@ const addRemover = (tableRow) => {
     btnRemover.classList.add('removeTask');
     btnRemover.addEventListener('click', () => {
         tableRow.remove();
+        salvarTarefas();
     })
     btnRemover.innerHTML = '<i class="fa-solid fa-trash"></i>';
 
@@ -90,6 +136,7 @@ const addEditar = (p) => {
 
         if(novoTexto !== null && novoTexto.trim()) {
             p.textContent = novoTexto;
+            salvarTarefas();
         }
     })
     btnEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
@@ -97,9 +144,11 @@ const addEditar = (p) => {
         return btnEditar;
 }
 
-document.getElementById('addTask').addEventListener('click', addLinha);
+document.getElementById('addTask').addEventListener('click', () => addLinha(null, false));
 document.querySelector('input#inputTask').addEventListener('keydown', function(evento) {
     if (evento.key === 'Enter') {
-        addLinha();
+        addLinha(null, false);
     }
 })
+
+carregarTarefas();
