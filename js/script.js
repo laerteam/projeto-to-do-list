@@ -6,7 +6,7 @@ let lista = document.getElementById('lista');
 const salvarTarefas = () => {
     let tarefas = [];
 
-    document.querySelectorAll('#lista tr').forEach(tr => {
+    document.querySelectorAll('.taskRow').forEach(tr => {
         let texto = tr.querySelector('p').textContent;
         let checked = tr.querySelector('input.concluir').checked;
 
@@ -62,33 +62,37 @@ const addLinha = (texto = null, isCheck = false) => {
         return;
     }
 
-    let tableRow = document.createElement('tr');
-    let tableHeader = document.createElement('th');
-    let tdConcluir = document.createElement('td');
-    let tdEditTh = document.createElement('td');
-    tdEditTh.classList.add('editTh');
+    let taskRow = document.createElement('div');
+    let taskName = document.createElement('div');
+    let taskConcluir = document.createElement('div');
+    let taskEdit = document.createElement('div');
+
+    taskRow.classList.add('taskRow');
+    taskName.classList.add('taskName');
+    taskConcluir.classList.add('taskConcluir');
+    taskEdit.classList.add('taskEdit');
 
     let preview = task.length > 30? 
     task.slice(0, 30) + '...': 
     task;
-    tableRow.dataset.tarefa = preview;
+    taskRow.dataset.tarefa = preview;
 
     let p = document.createElement('p');
     p.textContent = task;
 
-    let concluir = addConcluir(tableHeader, isCheck);
+    let concluir = addConcluir(taskName, isCheck);
     let btnEditar = addEditar(p);
-    let btnRemover = addRemover(tableRow);
+    let btnRemover = addRemover(taskRow);
 
-    tableHeader.appendChild(p);
-    tdConcluir.appendChild(concluir);
-    tdEditTh.appendChild(btnEditar);
-    tdEditTh.appendChild(btnRemover);
+    taskName.appendChild(p);
+    taskConcluir.appendChild(concluir);
+    taskEdit.appendChild(btnEditar);
+    taskEdit.appendChild(btnRemover);
 
-    lista.appendChild(tableRow);
-    tableRow.appendChild(tableHeader);
-    tableRow.appendChild(tdConcluir);
-    tableRow.appendChild(tdEditTh);
+    lista.appendChild(taskRow);
+    taskRow.appendChild(taskName);
+    taskRow.appendChild(taskConcluir);
+    taskRow.appendChild(taskEdit);
     
     inputTask.value = '';
     inputTask.focus();
@@ -96,7 +100,7 @@ const addLinha = (texto = null, isCheck = false) => {
     salvarTarefas();
 }
 
-const addConcluir = (tableHeader, isCheck) => {
+const addConcluir = (taskName, isCheck) => {
     let concluir = document.createElement('input');
     concluir.classList.add('concluir');
     concluir.name = 'concluir';
@@ -105,22 +109,22 @@ const addConcluir = (tableHeader, isCheck) => {
     concluir.checked = isCheck;
 
     if (isCheck) {
-        tableHeader.classList.add('isComplete');
+        taskName.classList.add('isComplete');
     }
 
     concluir.addEventListener('change', () => {
-        tableHeader.classList.toggle('isComplete');
+        taskName.classList.toggle('isComplete');
         salvarTarefas();
     })
 
     return concluir;
 }
 
-const addRemover = (tableRow) => {
+const addRemover = (taskRow) => {
     let btnRemover = document.createElement('button');
     btnRemover.classList.add('removeTask');
     btnRemover.addEventListener('click', () => {
-        tableRow.remove();
+        taskRow.remove();
         salvarTarefas();
     })
     btnRemover.innerHTML = '<i class="fa-solid fa-trash"></i>';

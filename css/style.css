@@ -80,6 +80,7 @@ h1 {
 
 button.removeTask, button.editTask {
     background-color: var(--lista-bg);
+    font-size: 15px;
 }
 
 button#addTask, button.removeTask, button.editTask {
@@ -102,13 +103,13 @@ main {
     text-align: center;
 }
 
-table#lista {
+#lista {
     width: 80vw;
     margin: 20px auto;
     color: black;
 }
 
-#lista tr {
+#lista .taskRow {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     background-color: white;
@@ -119,23 +120,22 @@ table#lista {
     border-radius: 5px;
 }
 
-#lista th {
+#lista .taskName {
     font-weight: normal;
     font-size: 1.1em;
     overflow-wrap: anywhere;
 }
 
-#lista th.isComplete {
+#lista .isComplete {
     text-decoration: line-through;
-    text-decoration-thickness: 2px;
     text-decoration-color: black;
 }
 
-body.escuro #lista th {
+body.escuro .taskName {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
 }
 
-body.escuro #lista tr {
+body.escuro #lista .taskRow {
     background-color: var(--lista-escuro);
     color: white;
 }
@@ -146,18 +146,19 @@ body.escuro #lista tr {
 }
 
 @media (max-width: 700px) {
-    #lista tr {
-        grid-template-columns: 1fr auto;
+    #lista .taskRow {
+        grid-template-columns: 1fr 100px;
+        grid-template-rows: 1fr 1fr;
+        gap: 15px;
     }
 
-    #lista td {
-        grid-row: 1 / 3;
+    #lista .taskEdit {
+        grid-row: 2 / -1;
         min-width: 50px;
     }
 
-    #lista td.editTh {
-        margin-top: 20px;
-        grid-row: 2 / 3;
-        grid-column: 1 / 2;
+    #lista .taskConcluir {
+        grid-row: 1 / -1;
+        grid-column: 2 / -1;
     }
 }
