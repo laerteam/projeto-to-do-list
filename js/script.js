@@ -3,6 +3,36 @@ let switchIn = document.getElementById('switchIn');
 let switchToggle = document.querySelector('input#switchToggle');
 let lista = document.getElementById('lista');
 
+lista.addEventListener('click', onListaClick);
+
+function onListaClick(event) {
+    const botoes = event.target;
+    const tr = botoes.closest('.taskRow');
+
+    if (botoes.closest('.concluir')) {
+        const tn = tr.querySelector('.taskName');
+
+        tn.classList.toggle('isComplete');
+        salvarTarefas();
+    }
+
+    if(botoes.closest('.removeTask')) {
+        tr.remove();
+        salvarTarefas();
+    }
+
+    if(botoes.closest('.editTask')) {
+        const tn = tr.querySelector('.taskName');
+        const p = tn.querySelector('p');
+        const novoTexto = prompt(`Editar tarefa: ${p.textContent}`);
+
+        if(novoTexto !== null && novoTexto.trim()) {
+            p.textContent = novoTexto;
+            salvarTarefas();
+        }
+    }
+}
+
 const salvarTarefas = () => {
     let tarefas = [];
 
@@ -81,8 +111,8 @@ const addLinha = (texto = null, isCheck = false) => {
     p.textContent = task;
 
     let concluir = addConcluir(taskName, isCheck);
-    let btnEditar = addEditar(p);
-    let btnRemover = addRemover(taskRow);
+    let btnEditar = addEditar();
+    let btnRemover = addRemover();
 
     taskName.appendChild(p);
     taskConcluir.appendChild(concluir);
@@ -112,37 +142,20 @@ const addConcluir = (taskName, isCheck) => {
         taskName.classList.add('isComplete');
     }
 
-    concluir.addEventListener('change', () => {
-        taskName.classList.toggle('isComplete');
-        salvarTarefas();
-    })
-
     return concluir;
 }
 
-const addRemover = (taskRow) => {
+const addRemover = () => {
     let btnRemover = document.createElement('button');
     btnRemover.classList.add('removeTask');
-    btnRemover.addEventListener('click', () => {
-        taskRow.remove();
-        salvarTarefas();
-    })
     btnRemover.innerHTML = '<i class="fa-solid fa-trash"></i>';
 
     return btnRemover;
 }
 
-const addEditar = (p) => {
+const addEditar = () => {
     let btnEditar = document.createElement('button');
     btnEditar.classList.add('editTask');
-    btnEditar.addEventListener('click', () => {
-        let novoTexto = prompt(`Editar tarefa: ${p.textContent}`);
-
-        if(novoTexto !== null && novoTexto.trim()) {
-            p.textContent = novoTexto;
-            salvarTarefas();
-        }
-    })
     btnEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
 
         return btnEditar;
