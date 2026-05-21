@@ -110,9 +110,9 @@ const addLinha = (texto = null, isCheck = false) => {
     let p = document.createElement('p');
     p.textContent = task;
 
-    let concluir = addConcluir(taskName, isCheck);
-    let btnEditar = addEditar();
-    let btnRemover = addRemover();
+    let concluir = addBotao('concluir', taskName, isCheck);
+    let btnEditar = addBotao('editar');
+    let btnRemover = addBotao('remover');
 
     taskName.appendChild(p);
     taskConcluir.appendChild(concluir);
@@ -130,38 +130,39 @@ const addLinha = (texto = null, isCheck = false) => {
     salvarTarefas();
 }
 
-const addConcluir = (taskName, isCheck) => {
-    let concluir = document.createElement('input');
-    concluir.classList.add('concluir');
-    concluir.name = 'concluir';
-    concluir.type = 'checkbox';
+document.getElementById('addTask').addEventListener('click', () => addLinha(null, false));
 
-    concluir.checked = isCheck;
+const addBotao = (botaoTipo, taskName, isCheck) => {
+    if (botaoTipo === 'concluir') {
+        let concluir = document.createElement('input');
+        concluir.classList.add('concluir');
+        concluir.name = 'concluir';
+        concluir.type = 'checkbox';
 
-    if (isCheck) {
-        taskName.classList.add('isComplete');
+        concluir.checked = isCheck;
+
+        if (isCheck) {
+            taskName.classList.add('isComplete');
+        }
+
+        return concluir;
     }
 
-    return concluir;
+    let btn = document.createElement('button');
+    switch (botaoTipo) {
+        case 'remover':
+            btn.classList.add('removeTask');
+            btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+            break;
+
+        case 'editar':
+            btn.classList.add('editTask');
+            btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
+            break;
+    }
+    return btn;
 }
 
-const addRemover = () => {
-    let btnRemover = document.createElement('button');
-    btnRemover.classList.add('removeTask');
-    btnRemover.innerHTML = '<i class="fa-solid fa-trash"></i>';
-
-    return btnRemover;
-}
-
-const addEditar = () => {
-    let btnEditar = document.createElement('button');
-    btnEditar.classList.add('editTask');
-    btnEditar.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
-
-        return btnEditar;
-}
-
-document.getElementById('addTask').addEventListener('click', () => addLinha(null, false));
 document.querySelector('input#inputTask').addEventListener('keydown', function(evento) {
     if (evento.key === 'Enter') {
         addLinha(null, false);
