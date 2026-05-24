@@ -1,70 +1,70 @@
 let switchOut = document.getElementById('switchOut');
 let switchIn = document.getElementById('switchIn');
 let switchToggle = document.querySelector('input#switchToggle');
-let lista = document.getElementById('lista');
+let list = document.getElementById('list');
 
-lista.addEventListener('click', onListaClick);
+list.addEventListener('click', onListClick);
 
-function onListaClick(event) {
-    const botoes = event.target;
-    const tr = botoes.closest('.taskRow');
+function onListClick(event) {
+    const btn = event.target;
+    const tr = btn.closest('.itemRow');
 
-    if (botoes.closest('.concluir')) {
-        const tn = tr.querySelector('.taskName');
+    if (btn.closest('.completeCheckbox')) {
+        const tn = tr.querySelector('.itemName');
 
         tn.classList.toggle('isComplete');
-        salvarTarefas();
+        saveTasks();
     }
 
-    if(botoes.closest('.removeTask')) {
+    if(btn.closest('.removeItem')) {
         tr.remove();
-        salvarTarefas();
+        saveTasks();
     }
 
-    if(botoes.closest('.editTask')) {
-        const tn = tr.querySelector('.taskName');
+    if(btn.closest('.editItem')) {
+        const tn = tr.querySelector('.itemName');
         const p = tn.querySelector('p');
-        const novoTexto = prompt(`Editar tarefa: ${p.textContent}`);
+        const newTxt = prompt(`Editar tarefa: ${p.textContent}`);
 
-        if(novoTexto !== null && novoTexto.trim()) {
-            p.textContent = novoTexto;
-            salvarTarefas();
+        if(newTxt !== null && newTxt.trim()) {
+            p.textContent = newTxt;
+            saveTasks();
         }
     }
 }
 
-const salvarTarefas = () => {
-    let tarefas = [];
+const saveTasks = () => {
+    let tasks = [];
 
-    document.querySelectorAll('.taskRow').forEach(tr => {
-        let texto = tr.querySelector('p').textContent;
-        let checked = tr.querySelector('input.concluir').checked;
+    document.querySelectorAll('.itemRow').forEach(tr => {
+        let txt = tr.querySelector('p').textContent;
+        let checked = tr.querySelector('input.completeCheckbox').checked;
 
-        tarefas.push({
-            tarefa: texto,
+        tasks.push({
+            task: txt,
             isCheck: checked
         });
     });
 
-    localStorage.setItem('tarefas', JSON.stringify(tarefas));
+    localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-const carregarTarefas = () => {
-    let tarefas = JSON.parse(localStorage.getItem('tarefas')) || [];
+const loadTasks = () => {
+    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
     let isDark = localStorage.getItem('isDarkMode') === 'true';
-    aplicarModoEscuro(isDark);
+    darkMode(isDark);
 
-    tarefas.forEach((tarefaObj) => {
-        addLinha(tarefaObj.tarefa, tarefaObj.isCheck);
+    tasks.forEach((taskObj) => {
+        addRow(taskObj.task, taskObj.isCheck);
     });
 }
 
-const aplicarModoEscuro = (ativo) => {
-    switchToggle.checked = ativo;
-    document.body.classList.toggle('escuro', ativo);
+const darkMode = (on) => {
+    switchToggle.checked = on;
+    document.body.classList.toggle('dark', on);
 
-    if (ativo) {
+    if (on) {
         switchIn.style.transform = 'translateX(30px)';
         switchIn.innerHTML = '<i class="fa-solid fa-moon"></i>'
     } else {
@@ -74,99 +74,99 @@ const aplicarModoEscuro = (ativo) => {
 }
 
 const switchOnOff = () => {
-    const estadoAtual = switchToggle.checked;
-    const novoEstado = !estadoAtual;
-    aplicarModoEscuro(novoEstado);
-    localStorage.setItem('isDarkMode', novoEstado);
+    const currentState = switchToggle.checked;
+    const newState = !currentState;
+    darkMode(newState);
+    localStorage.setItem('isDarkMode', newState);
 }
 
 switchOut.addEventListener('click', switchOnOff);
 
-const addLinha = (texto = null, isCheck = false) => {
+const addRow = (txt = null, isCheck = false) => {
     let inputTask = document.querySelector('input#inputTask');
-    let task = texto || inputTask.value;
+    let item = txt || inputTask.value;
     
-    if (!task.trim()) {
+    if (!item.trim()) {
         alert('[ERRO] É necessário digitar um valor antes de adiciona-lo.');
         inputTask.value = '';
         return;
     }
 
-    let taskRow = document.createElement('div');
-    let taskName = document.createElement('div');
-    let taskConcluir = document.createElement('div');
-    let taskEdit = document.createElement('div');
+    let itemRow = document.createElement('div');
+    let itemName = document.createElement('div');
+    let itemControl = document.createElement('div');
+    let itemEdit = document.createElement('div');
 
-    taskRow.classList.add('taskRow');
-    taskName.classList.add('taskName');
-    taskConcluir.classList.add('taskConcluir');
-    taskEdit.classList.add('taskEdit');
+    itemRow.classList.add('itemRow');
+    itemName.classList.add('itemName');
+    itemControl.classList.add('itemControl');
+    itemEdit.classList.add('itemEdit');
 
-    let preview = task.length > 30? 
-    task.slice(0, 30) + '...': 
-    task;
-    taskRow.dataset.tarefa = preview;
+    let preview = item.length > 30? 
+    item.slice(0, 30) + '...': 
+    item;
+    itemRow.dataset.task = preview;
 
     let p = document.createElement('p');
-    p.textContent = task;
+    p.textContent = item;
 
-    let concluir = addBotao('concluir', taskName, isCheck);
-    let btnEditar = addBotao('editar');
-    let btnRemover = addBotao('remover');
+    let checkbox = createButton('checkbox', itemName, isCheck);
+    let btnEdit = createButton('edit');
+    let btnRemove = createButton('remove');
 
-    taskName.appendChild(p);
-    taskConcluir.appendChild(concluir);
-    taskEdit.appendChild(btnEditar);
-    taskEdit.appendChild(btnRemover);
+    itemName.appendChild(p);
+    itemControl.appendChild(checkbox);
+    itemEdit.appendChild(btnEdit);
+    itemEdit.appendChild(btnRemove);
 
-    lista.appendChild(taskRow);
-    taskRow.appendChild(taskName);
-    taskRow.appendChild(taskConcluir);
-    taskRow.appendChild(taskEdit);
+    list.appendChild(itemRow);
+    itemRow.appendChild(itemName);
+    itemRow.appendChild(itemControl);
+    itemRow.appendChild(itemEdit);
     
     inputTask.value = '';
     inputTask.focus();
 
-    salvarTarefas();
+    saveTasks();
 }
 
-document.getElementById('addTask').addEventListener('click', () => addLinha(null, false));
+document.getElementById('addTask').addEventListener('click', () => addRow(null, false));
 
-const addBotao = (botaoTipo, taskName, isCheck) => {
-    if (botaoTipo === 'concluir') {
-        let concluir = document.createElement('input');
-        concluir.classList.add('concluir');
-        concluir.name = 'concluir';
-        concluir.type = 'checkbox';
+const createButton = (btnType, itemName, isCheck) => {
+    if (btnType === 'checkbox') {
+        let checkbox = document.createElement('input');
+        checkbox.classList.add('completeCheckbox');
+        checkbox.name = 'completeCheckbox';
+        checkbox.type = 'checkbox';
 
-        concluir.checked = isCheck;
+        checkbox.checked = isCheck;
 
         if (isCheck) {
-            taskName.classList.add('isComplete');
+            itemName.classList.add('isComplete');
         }
 
-        return concluir;
+        return checkbox;
     }
 
     let btn = document.createElement('button');
-    switch (botaoTipo) {
-        case 'remover':
-            btn.classList.add('removeTask');
+    switch (btnType) {
+        case 'remove':
+            btn.classList.add('removeItem');
             btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
             break;
 
-        case 'editar':
-            btn.classList.add('editTask');
+        case 'edit':
+            btn.classList.add('editItem');
             btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
             break;
     }
     return btn;
 }
 
-document.querySelector('input#inputTask').addEventListener('keydown', function(evento) {
-    if (evento.key === 'Enter') {
-        addLinha(null, false);
+document.querySelector('input#inputTask').addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        addRow(null, false);
     }
 })
 
-carregarTarefas();
+loadTasks();

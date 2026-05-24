@@ -7,25 +7,24 @@
 }
 
 :root {
-    --fundo-claro: #A3BCF9;
-    --fundo-escuro: #595959;
-    --destaque: #F6AE2D;
-    --lista-escuro: #919191;
-
+    --light-bottom: #A3BCF9;
+    --dark-bottom: #595959;
+    --highlight: #F6AE2D;
+    --dark-list: #919191;
     --bgcolor: #A3BCF9;
-    --lista-bg: white;
+    --list-bg: white;
 }
 
 body {
-    background-color: var(--fundo-claro);
+    background-color: var(--light-bottom);
     color: white;
     font-family: "Archivo", sans-serif;
 }
 
-body.escuro {
-    background-color: var(--fundo-escuro);
-    --bgcolor: var(--fundo-escuro);
-    --lista-bg: var(--lista-escuro);
+body.dark {
+    background-color: var(--dark-bottom);
+    --bgcolor: var(--dark-bottom);
+    --list-bg: var(--dark-list);
 }
 
 div#switchOut {
@@ -51,7 +50,7 @@ span#switchIn {
     justify-content: center;
     align-items: center;
     transition: transform .3s, background-color .3s;
-    background-color: var(--fundo-claro);
+    background-color: var(--light-bottom);
     color: yellow;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.200);
     font-size: 18px;
@@ -60,8 +59,8 @@ span#switchIn {
     border-radius: 50%;
 }
 
-body.escuro span#switchIn {
-    background-color: var(--fundo-escuro);
+body.dark span#switchIn {
+    background-color: var(--dark-bottom);
     color: white;
 }
 
@@ -78,38 +77,38 @@ h1 {
     border-radius: 14px;
 }
 
-button.removeTask, button.editTask {
-    background-color: var(--lista-bg);
+button.removeItem, button.editItem {
+    background-color: var(--list-bg);
     font-size: 15px;
 }
 
-button#addTask, button.removeTask, button.editTask {
+button#addTask, button.removeItem, button.editItem {
     padding: 3px;
     margin: 0 10px;
     border: 0;
     border-radius: 5px;
 }
 
-#addTask:active, button.removeTask:active, button.editTask:active {
+#addTask:active, button.removeItem:active, button.editItem:active {
     background-color: var(--bgcolor);
 }
 
-#addTask:hover, button.removeTask:hover, button.editTask:hover {
-    color: var(--destaque);
-    border-color: var(--destaque);
+#addTask:hover, button.removeItem:hover, button.editItem:hover {
+    color: var(--highlight);
+    border-color: var(--highlight);
 }
 
 main {
     text-align: center;
 }
 
-#lista {
+#list {
     width: 80vw;
     margin: 20px auto;
     color: black;
 }
 
-#lista .taskRow {
+#list .itemRow {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     background-color: white;
@@ -120,44 +119,44 @@ main {
     border-radius: 5px;
 }
 
-#lista .taskName {
+#list .itemName {
     font-weight: normal;
     font-size: 1.1em;
     overflow-wrap: anywhere;
 }
 
-#lista .isComplete {
+#list .isComplete {
     text-decoration: line-through;
     text-decoration-color: black;
 }
 
-body.escuro .taskName {
+body.dark .itemName {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
 }
 
-body.escuro #lista .taskRow {
-    background-color: var(--lista-escuro);
+body.dark #list .itemRow {
+    background-color: var(--dark-list);
     color: white;
 }
 
-#lista input.concluir {
+#list input.completeCheckbox {
     height: 20px;
     width: 20px;
 }
 
 @media (max-width: 700px) {
-    #lista .taskRow {
+    #list .itemRow {
         grid-template-columns: 1fr 100px;
         grid-template-rows: 1fr 1fr;
         gap: 15px;
     }
 
-    #lista .taskEdit {
+    #list .itemEdit {
         grid-row: 2 / -1;
         min-width: 50px;
     }
 
-    #lista .taskConcluir {
+    #list .itemControl {
         grid-row: 1 / -1;
         grid-column: 2 / -1;
     }
