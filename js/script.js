@@ -1,64 +1,122 @@
 let switchOut = document.getElementById('switchOut');
 let switchIn = document.getElementById('switchIn');
 let switchToggle = document.querySelector('input#switchToggle');
-let list = document.getElementById('list');
 
-list.addEventListener('click', onListClick);
+let taskList = document.getElementById('taskList');
+const masterList = document.querySelector('#masterList');
+masterList.showModal();
+const inputList = document.querySelector('#inputList');
 
-function onListClick(event) {
+const groupLists = JSON.parse(localStorage.getItem('lists')) || {};
+let currentList = '';
+
+taskList.addEventListener('click', onListsClick);
+masterList.addEventListener('click', onListsClick);
+
+function onListsClick(event, EnterClick) {
     const btn = event.target;
-    const tr = btn.closest('.itemRow');
+    const ir = btn.closest('.itemRow');
 
     if (btn.closest('.completeCheckbox')) {
-        const tn = tr.querySelector('.itemName');
+        const itemName = ir.querySelector('.itemName');
 
-        tn.classList.toggle('isComplete');
+        itemName.classList.toggle('isComplete');
         saveTasks();
     }
 
     if(btn.closest('.removeItem')) {
-        tr.remove();
+        delete groupLists[ir.dataset.id]
+        ir.remove();
         saveTasks();
     }
 
     if(btn.closest('.editItem')) {
-        const tn = tr.querySelector('.itemName');
-        const p = tn.querySelector('p');
-        const newTxt = prompt(`Editar tarefa: ${p.textContent}`);
+        const p = ir.querySelector('p');
+        let newTxt = prompt(`Editar tarefa: ${p.textContent}`);
 
         if(newTxt !== null && newTxt.trim()) {
+            let listName = newTxt;
+            let c = 1;
+            if (ir.dataset.id) {
+                while (groupLists[newTxt]) {
+                    newTxt = `${listName} (${c})`;
+                    c++
+                }
+
+                groupLists[newTxt] = groupLists[ir.dataset.id];
+                delete groupLists[ir.dataset.id];
+                ir.dataset.id = newTxt;
+            }
             p.textContent = newTxt;
             saveTasks();
         }
+    }
+
+    if (btn.closest('.addList') || EnterClick) {
+        let listName = inputList.value;
+        let c = 1;
+        while (groupLists[listName]) {
+            listName = `${inputList.value} (${c})`;
+            c++
+        }
+
+        if (inputList.value.trim()) {
+            groupLists[listName] = [];
+        }
+
+        addRow(listName, false, false)
+    }
+
+    if (btn.closest('.selectList')) {
+        let currentListTxt = document.querySelector('#currentListTxt');
+
+        currentList = ir.dataset.id;
+        currentListTxt = `Lista atual: ${currentList}`;
+        masterList.close();
+        loadTasks();
     }
 }
 
 const saveTasks = () => {
     let tasks = [];
 
-    document.querySelectorAll('.itemRow').forEach(tr => {
-        let txt = tr.querySelector('p').textContent;
-        let checked = tr.querySelector('input.completeCheckbox').checked;
+    if (groupLists[currentList]) {
+        document.querySelectorAll('[data-task]').forEach(ir => {
+            let txt = ir.querySelector('p').textContent;
+            let checked = ir.querySelector('input.completeCheckbox').checked;
 
-        tasks.push({
-            task: txt,
-            isCheck: checked
+            tasks.push({
+                task: txt,
+                isCheck: checked
+            });
         });
-    });
+        groupLists[currentList] = tasks;
+    }
 
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('lists', JSON.stringify(groupLists));
 }
 
 const loadTasks = () => {
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    document.querySelectorAll('[data-task]').forEach(ir => {
+        ir.remove();
+    })
 
-    let isDark = localStorage.getItem('isDarkMode') === 'true';
-    darkMode(isDark);
-
-    tasks.forEach((taskObj) => {
+    groupLists[currentList].forEach((taskObj) => {
         addRow(taskObj.task, taskObj.isCheck);
+    })
+}
+
+const loadLists = () => {
+    let lists = JSON.parse(localStorage.getItem('lists')) || {};
+
+    Object.keys(lists).forEach((taskObj) => {
+        addRow(taskObj, false, false);
     });
 }
+
+document.getElementById('openListsMenu').addEventListener('click', () => {
+    masterList.showModal();
+})
 
 const darkMode = (on) => {
     switchToggle.checked = on;
@@ -82,13 +140,16 @@ const switchOnOff = () => {
 
 switchOut.addEventListener('click', switchOnOff);
 
-const addRow = (txt = null, isCheck = false) => {
+const addRow = (txt = null, isCheck = false, isListRow = true) => {
     let inputTask = document.querySelector('input#inputTask');
     let item = txt || inputTask.value;
     
     if (!item.trim()) {
         alert('[ERRO] É necessário digitar um valor antes de adiciona-lo.');
-        inputTask.value = '';
+        isListRow?
+            inputTask.value = '':
+            inputList.value = '';
+        
         return;
     }
 
@@ -102,35 +163,48 @@ const addRow = (txt = null, isCheck = false) => {
     itemControl.classList.add('itemControl');
     itemEdit.classList.add('itemEdit');
 
-    let preview = item.length > 30? 
-    item.slice(0, 30) + '...': 
-    item;
-    itemRow.dataset.task = preview;
-
     let p = document.createElement('p');
     p.textContent = item;
 
-    let checkbox = createButton('checkbox', itemName, isCheck);
     let btnEdit = createButton('edit');
     let btnRemove = createButton('remove');
 
     itemName.appendChild(p);
-    itemControl.appendChild(checkbox);
     itemEdit.appendChild(btnEdit);
     itemEdit.appendChild(btnRemove);
 
-    list.appendChild(itemRow);
-    itemRow.appendChild(itemName);
-    itemRow.appendChild(itemControl);
-    itemRow.appendChild(itemEdit);
-    
-    inputTask.value = '';
-    inputTask.focus();
+    if (isListRow) {
+        let checkbox = createButton('checkbox', itemName, isCheck);
 
+        let preview = item.length > 30? 
+        item.slice(0, 30) + '...': 
+        item;
+        itemRow.dataset.task = preview;
+
+        taskList.appendChild(itemRow);
+        itemRow.appendChild(itemName);
+        itemControl.appendChild(checkbox);
+        itemRow.appendChild(itemControl);
+
+        inputTask.value = '';
+        inputTask.focus();
+    } else {
+        let selectButton = createButton('select');
+
+        itemRow.dataset.id = item;
+
+        masterList.appendChild(itemRow);
+        itemRow.appendChild(itemName);
+        itemControl.appendChild(selectButton);
+        itemRow.appendChild(itemControl);
+
+        inputList.value = '';
+        inputList.focus();
+    }
+
+    itemRow.appendChild(itemEdit);
     saveTasks();
 }
-
-document.getElementById('addTask').addEventListener('click', () => addRow(null, false));
 
 const createButton = (btnType, itemName, isCheck) => {
     if (btnType === 'checkbox') {
@@ -151,22 +225,35 @@ const createButton = (btnType, itemName, isCheck) => {
     let btn = document.createElement('button');
     switch (btnType) {
         case 'remove':
-            btn.classList.add('removeItem');
+            btn.classList.add('removeItem', 'listButton');
             btn.innerHTML = '<i class="fa-solid fa-trash"></i>';
             break;
 
         case 'edit':
-            btn.classList.add('editItem');
+            btn.classList.add('editItem', 'listButton');
             btn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
             break;
+        
+        case 'select':
+            btn.classList.add('selectList', 'listButton');
+            btn.textContent = 'Escolher';
     }
     return btn;
 }
 
+document.getElementById('addTask').addEventListener('click', () => addRow(null, false));
 document.querySelector('input#inputTask').addEventListener('keydown', function(event) {
     if (event.key === 'Enter') {
         addRow(null, false);
     }
 })
 
-loadTasks();
+inputList.addEventListener('keydown', function(event) {
+    if (event.key === 'Enter') {
+        onListsClick(event, true);
+    }
+})
+
+let isDark = localStorage.getItem('isDarkMode') === 'true';
+darkMode(isDark);
+loadLists();

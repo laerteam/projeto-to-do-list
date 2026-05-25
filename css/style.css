@@ -64,13 +64,14 @@ body.dark span#switchIn {
     color: white;
 }
 
-h1 {
+h1, h2 {
+    color: white;
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
     text-align: center;
     margin-bottom: 10px;
 }
 
-#inputTask {
+#inputTask, #inputList {
     height: 23px;
     padding: 5px;
     border: none;
@@ -82,18 +83,19 @@ button.removeItem, button.editItem {
     font-size: 15px;
 }
 
-button#addTask, button.removeItem, button.editItem {
+.listButton {
     padding: 3px;
     margin: 0 10px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.450);
     border: 0;
     border-radius: 5px;
 }
 
-#addTask:active, button.removeItem:active, button.editItem:active {
+.listButton:active {
     background-color: var(--bgcolor);
 }
 
-#addTask:hover, button.removeItem:hover, button.editItem:hover {
+.listButton:hover {
     color: var(--highlight);
     border-color: var(--highlight);
 }
@@ -102,13 +104,13 @@ main {
     text-align: center;
 }
 
-#list {
+#taskList {
     width: 80vw;
     margin: 20px auto;
     color: black;
 }
 
-#list .itemRow {
+.itemRow {
     display: grid;
     grid-template-columns: 1fr 1fr auto;
     background-color: white;
@@ -119,13 +121,13 @@ main {
     border-radius: 5px;
 }
 
-#list .itemName {
+.itemName {
     font-weight: normal;
     font-size: 1.1em;
     overflow-wrap: anywhere;
 }
 
-#list .isComplete {
+.isComplete {
     text-decoration: line-through;
     text-decoration-color: black;
 }
@@ -134,29 +136,54 @@ body.dark .itemName {
     text-shadow: 1px 1px rgba(0, 0, 0, 0.5);
 }
 
-body.dark #list .itemRow {
+body.dark .itemRow {
     background-color: var(--dark-list);
     color: white;
 }
 
-#list input.completeCheckbox {
+input.completeCheckbox {
     height: 20px;
     width: 20px;
 }
 
+#masterList {
+    position: fixed;
+    background-color: var(--bgcolor);
+    padding: 10px;
+    height: 80vh;
+    min-width: 50vw;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.350);
+    border: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#masterList::backdrop {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+#openListsMenu {
+    box-shadow: 2px 2px 3px solid black;
+}
+
 @media (max-width: 700px) {
-    #list .itemRow {
+    .itemRow {
         grid-template-columns: 1fr 100px;
         grid-template-rows: 1fr 1fr;
         gap: 15px;
     }
 
-    #list .itemEdit {
+    #masterList {
+        min-width: 80vw;
+    }
+
+    .itemEdit {
         grid-row: 2 / -1;
         min-width: 50px;
     }
 
-    #list .itemControl {
+    .itemControl {
         grid-row: 1 / -1;
         grid-column: 2 / -1;
     }

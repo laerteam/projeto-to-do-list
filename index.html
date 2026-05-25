@@ -19,10 +19,20 @@
     </header>
     <main>
         <input type="text" placeholder="Escreva uma tarefa" name="inputTask" id="inputTask">
-        <button id="addTask">Adicionar</button>
-        <div id="list">
-
+        <button id="addTask" class="listButton">Adicionar</button>
+        <button id="openListsMenu" class="listButton">
+            <i class="fa-solid fa-folder"></i>
+        </button>
+        <div id="taskList">
+            <p id="currentListTxt"></p>
         </div>
+        <dialog id="masterList">
+            <section>
+                <h2>Escolha uma lista</h2>
+                <input type="text" name="inputList" id="inputList" placeholder="Escreva o nome da lista" maxlength="20">
+                <button class="addList listButton">Adicionar</button>
+            </section>
+        </dialog>
     </main>
     <script src="https://kit.fontawesome.com/55cafb9f96.js" crossorigin="anonymous"></script>
     <script src="js/script.js"></script>
