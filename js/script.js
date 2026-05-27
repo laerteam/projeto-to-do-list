@@ -71,7 +71,7 @@ function onListsClick(event, EnterClick) {
         let currentListTxt = document.querySelector('#currentListTxt');
 
         currentList = ir.dataset.id;
-        currentListTxt = `Lista atual: ${currentList}`;
+        currentListTxt.textContent = `Lista atual: ${currentList}`;
         masterList.close();
         loadTasks();
     }
@@ -145,13 +145,16 @@ const addRow = (txt = null, isCheck = false, isListRow = true) => {
     let item = txt || inputTask.value;
     
     if (!item.trim()) {
-        alert('[ERRO] É necessário digitar um valor antes de adiciona-lo.');
-        isListRow?
-            inputTask.value = '':
-            inputList.value = '';
+        if (isListRow) {
+            document.querySelectorAll('.error')[0].style.display = 'block';
+        } else {
+            document.querySelectorAll('.error')[1].style.display = 'block';
+        }
         
         return;
     }
+    document.querySelectorAll('.error')[0].style.display = 'none';
+    document.querySelectorAll('.error')[1].style.display = 'none';
 
     let itemRow = document.createElement('div');
     let itemName = document.createElement('div');
