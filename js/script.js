@@ -35,6 +35,12 @@ function onListsClick(event, EnterClick) {
         let newTxt = prompt(`Editar tarefa: ${p.textContent}`);
 
         if(newTxt !== null && newTxt.trim()) {
+            while (newTxt.length > 20) {
+                newTxt = prompt('[ERRO] O nome deve ter no máximo 20 caracteres');
+                if (!newTxt || !newTxt.trim()) {
+                    return;
+                }
+            }
             let listName = newTxt;
             let c = 1;
             if (ir.dataset.id) {
@@ -179,8 +185,8 @@ const addRow = (txt = null, isCheck = false, isListRow = true) => {
     if (isListRow) {
         let checkbox = createButton('checkbox', itemName, isCheck);
 
-        let preview = item.length > 30? 
-        item.slice(0, 30) + '...': 
+        let preview = item.length > 8? 
+        item.slice(0, 8) + '...': 
         item;
         itemRow.dataset.task = preview;
 
