@@ -35,8 +35,8 @@ function onListsClick(event, EnterClick) {
         let newTxt = prompt(`Editar tarefa: ${p.textContent}`);
 
         if(newTxt !== null && newTxt.trim()) {
-            while (newTxt.length > 20) {
-                newTxt = prompt('[ERRO] O nome deve ter no máximo 20 caracteres');
+            while (newTxt.length > 40) {
+                newTxt = prompt('[ERRO] O nome deve ter no máximo 40 caracteres');
                 if (!newTxt || !newTxt.trim()) {
                     return;
                 }
