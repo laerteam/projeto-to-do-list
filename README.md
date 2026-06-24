@@ -1,16 +1,27 @@
-# projeto-to-do-list
-Aplicação de Lista de Tarefas desenvolvido utilizando HTML, CSS e Javascript.
+# To Do List
 
-Funcionalidades:  
-    - Adicionar tarefas  
-    - Editar tarefas  
-    - Remover tarefas  
-    - Interface em modo escuro  
+Aplicação de lista de tarefas desenvolvida com HTML, CSS e JavaScript puro.
 
-Tecnologias:  
-    - HTML  
-    - CSS  
-    - JavaScript  
+## Demonstração
 
-Objetivo:  
-    - Projeto criado para praticar manipulação do DOM e lógica com JavaScript.  
+[Acesse o projeto](https://laerteam.github.io/projeto-to-do-list/)
+
+## Funcionalidades
+
+- Criar e gerenciar múltiplas listas de tarefas
+- Adicionar tarefas
+- Editar tarefas existentes
+- Remover tarefas
+- Alternar entre modo claro e escuro
+- Persistência de dados utilizando Local Storage
+- Manutenção automática dos dados após recarregar a página
+
+## Tecnologias
+
+- HTML5
+- CSS3
+- JavaScript (Vanilla)
+
+## Objetivo
+
+Projeto desenvolvido para praticar manipulação do DOM, gerenciamento de estado da interface, armazenamento local de dados e lógica de programação com JavaScript.
